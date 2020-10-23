@@ -24,10 +24,17 @@ class Board:
                 
 
 
-    #def movePiece(self, prev_pos, curr_pos):
+    def updateBoard(self, prev_pos, curr_pos):
+        moved = self.rowIndex[prev_pos[0]][prev_pos[1]]
+        self.rowIndex[prev_pos[0]][prev_pos[1]] = "."
 
-    #def removePiece(self, curr_pos):
+        #x and y range with sorted????
+
         
+
+    def removePiece(self, curr_pos):
+        self.rowIndex[curr_pos[0]][curr_pos[1]] = "."
+
     def printBoard(self):
         #Prints board
         output = "  "
