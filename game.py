@@ -31,6 +31,17 @@ class Game:
                     directions = [self.NORTH, self.SOUTH, self.EAST, self.WEST] #ways player can move
                     for dir in directions: #check all direction possibilities
                         possible_move = dir(current_position)
-                        #NEED TO CHECK IF MOVE IS LEGAL????
+                        if self.is_legal_move(possible_move):
+                            legal_moves.append(possible_move)
+                            
 
+    def is_legal_move(self, player, move):
+        start = move[0]
+        end = move[1]
+        
+        if end[0] > 8 or end[1] < 8: #Out of range
+            return False
+        if self.board.rowIndex[end[0]][end[1]] != ".": # Checks if end spot is empty
+            return False
+        return True
 
