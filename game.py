@@ -162,19 +162,21 @@ class Game:
                 print("Divert")
                 starts = ((0, 0), (3, 3), (4, 4), (7, 7))
                 start_removal = random.choice(starts)
+                print(start_removal)
                 self.board.removePiece(start_removal)
                 print(self.board.str_board())
+                adjacent_coords_output = ((-1, -1))
                 if(start_removal[0] == 0):
                     adjacent_coords_output = ((1, 2), (2, 1))
                 elif(start_removal[0] == 7):
-                    adajcent_coords_output = ((8, 7), (7, 8))
+                    adjacent_coords_output = ((8, 7), (7, 8))
                 else:
-                    adjacent_coords_output = ((start_removal + 1, start_removal), (start_removal, start_removal + 1), (start_removal + 1, start_removal + 2), (start_removal + 2, start_removal + 1))
-                print("Legal inputs", adjacent_coords_output)
+                    adjacent_coords_output = (((start_removal[0] + 1), start_removal[1]), (start_removal[0], (start_removal[1] + 1)), ((start_removal[0] + 1), (start_removal[1] + 2)), ((start_removal[0] + 2), (start_removal[1] + 1)))
+                print("Legal inputs ", adjacent_coords_output)
                 input_coord = (-1, -1)
                 while not(input_coord in adjacent_coords_output):
                     input_coord = (input("Please choose input coordinate: "))
-                self.board.removePiece((input_coord[0] - 1, input_coord[1] - 1)) # make zero index and remove
+                self.board.removePiece(((input_coord[0] - 1), (input_coord[1] - 1))) # make zero index and remove
                 print(self.board.str_board())
                 # then would start with ai playing
             else:
