@@ -13,6 +13,10 @@ class Game:
         self.ai_type = "random"
         self.total_ai_nodes = 0
         self.total_ai_time = 0
+        self.total_cutoffs = 0
+        self.total_branches = 0
+        self.total_parents = 0
+        self.total_static_eval = 0
     
     @staticmethod
     def NORTH(position):
