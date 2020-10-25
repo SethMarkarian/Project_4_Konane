@@ -17,6 +17,7 @@ class Game:
         self.total_branches = 0
         #self.total_parents = 0
         self.total_static_eval = 0
+        self.diverted = 0
     
     @staticmethod
     def NORTH(position):
@@ -157,6 +158,7 @@ class Game:
                 print(self.board.str_board())
                 # then would start with player playing
             elif(decision == "Divert"):
+                self.diverted = 1
                 print("Divert")
                 starts = ((0, 0), (3, 3), (4, 4), (7, 7))
                 start_removal = random.choice(starts)
@@ -246,12 +248,18 @@ def play_game(game_state):
     #remove = input("W remove a piece: ")
     #game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
     game_state.first_moves()
-    while game_state.end_the_game != 1:
-        if game_state.current_player == 0:
-            game_state.ai_playing()
-        else:
-            game_state.player_playing()
-
+    if (game_state.diverted == 1):
+        while game_state.end_the_game != 1:
+            if game_state.current_player == 0:
+                game_state.ai_playing()
+            else:
+                game_state.player_playing()
+    else:
+        while game_state.end_the_game != 1:
+            if game_state.current_player == 0:
+                game_state.player_playing()
+            else:
+                game_state.ai_playing()
     
     
 if __name__ == '__main__':
