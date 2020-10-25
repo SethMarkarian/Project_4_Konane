@@ -74,18 +74,16 @@ class Game:
                 self.end_the_game = 1
             else:
                 is_valid = False
-                while is_valid = False: # get valid input from player
+                while is_valid == False: # get valid input from player
                     move_coord = (input("Coordinate of piece: "), input("Coordinate to move piece: "))
                     move_coord = ((move_coord[0][0] - 1, move_coord[0][1] - 1), (move_coord[1][0] - 1, move_coord[1][1] - 1)) # adjust to be zero index
                     is_valid_input = move_coord in moves
-
+                self.board.updateBoard(move_coord[0], move_coord[1])
         except KeyboardInterrupt:
             raise
         except:
             print("Please provide valid input") # if invalid input
             self.player_playing()
-
-
 
     def ai_playing(self):
         return 0 #placeholder for compilation
