@@ -34,10 +34,15 @@ class Game:
                         if self.is_legal_move(possible_move):
                             legal_moves.append(possible_move)
                             
+                            #Check for multiple jumps
+                            next_start = possible_move[0]
+                            next_end = possible_move[1]
+                            #HOW DO I SIMULATE A MOVE???????
+
 
     def is_legal_move(self, player, move):
-        start = move[0]
-        end = move[1]
+        start = move[0] #before moving
+        end = move[1] #after moving
         
         if end[0] > 8 or end[1] < 8: #Out of range
             return False
