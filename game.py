@@ -13,7 +13,7 @@ class Game:
         self.ai_type = "random"
         self.total_ai_nodes = 0
         self.total_ai_time = 0
-        self.total_cutoffs = 0
+        self.total_total_cutoffs = 0
         self.total_branches = 0
         self.total_parents = 0
         self.total_static_eval = 0
@@ -90,7 +90,15 @@ class Game:
                 self.current_player = (1 + self.current_player) % 2 # swap player
                 return
             elif(ai_type == "minimax"):
-                print("minimax not done")
+                depth_input = 4
+                computer_move = minimax(self, float("-inf"), float("inf"), depth_input)
+			    computer_move = computer_move[1]
+                if computer_move is not None:
+                    self.board.updateBoard(computer_move[0], computer_move[1])
+                    print("Made move: ", ((computer_move[0][0]+1, computer_move[0][1]+1), (computer_move[1][0]+1, computer_move[1][1]+1)))
+                    self.last_move_made = computer_move
+                    self.current_player = 1 - self.current_player
+                    print("minimax not done")
             elif(ai_type == "ab_pruning"):
                 print ("ab pruning not done")
         end = time.time()
@@ -181,9 +189,9 @@ class Game:
 calls = 0
 num_branches = 0
 static_evaluation_count = 0
-cutoffs = 0
+total_cutoffs = 0
 def minimax(state, alpha, beta, depth):
-    global calls, num_branches, static_evaluation_count, cutoffs
+    global total_cutoffs, num_branches, static_evaluation_count, total_cutoffs
     if depth == 4: #why 4 specifically???
         static_evaluation_count += 1
         return (state.static_evaluation(), None)
@@ -197,7 +205,7 @@ def minimax(state, alpha, beta, depth):
                 alpha = ab
                 move = successor_state.last_move_made
             if alpha >= beta:
-                cutoffs += 1
+                total_cutoffs += 1
                 return (beta, move)
         return (alpha, move)
     else:
@@ -210,6 +218,6 @@ def minimax(state, alpha, beta, depth):
                 beta = ab
                 move = successor_state.last_move_made
             if beta <= alpha:
-                cutoffs += 1
+                total_cutoffs += 1
                 return (beta, move)
         return (beta, move)
