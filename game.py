@@ -174,3 +174,38 @@ class Game:
         return successors
 
 
+calls = 0
+num_branches = 0
+static_evaluation_count = 0
+cutoffs = 0
+def minimax(state, alpha, beta, depth):
+    global calls, num_branches, static_evaluation_count, cutoffs
+    if depth == 4: #why 4 specifically???
+        static_evaluation_count += 1
+        return (state.static_evaluation(), None)
+    elif state.current_player == 0:
+        move = None
+        calls += 1
+        for successor_state in state.get_successors():
+            num_branches += 1
+            ab, player_move = minimax(successor_state, alpha, beta, depth + 1)
+            if ab > alpha:
+                alpha = ab
+                move = successor_state.last_move_made
+            if alpha >= beta:
+                cutoffs += 1
+                return (beta, move)
+        return (alpha, move)
+    else:
+        move = None
+        calls += 1
+        for successor_state in state.get_successors():
+            num_branches += 1
+            ab, player_move = minimax(successor_state, alpha, beta, depth + 1)
+            if be < beta:
+                beta = ab
+                move = successor_state.last_move_made
+            if beta <= alpha:
+                cutoffs += 1
+                return (beta, move)
+        return (beta, move)
