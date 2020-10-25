@@ -11,11 +11,11 @@ class Game:
         self.player_piece = ('B', 'W')
         self.end_the_game = 0
         self.ai_type = "random"
-        self.total_ai_nodes = 0
-        self.total_ai_time = 0
+        #self.total_ai_nodes = 0
+        #self.total_ai_time = 0
         self.total_cutoffs = 0
         self.total_branches = 0
-        self.total_parents = 0
+        #self.total_parents = 0
         self.total_static_eval = 0
     
     @staticmethod
@@ -78,8 +78,8 @@ class Game:
         moves = self.find_moves(self.current_player)
         if(len(moves) == 0):
             print("Player won the game")
-            print("Total ai time: ", total_ai_time)
-            print("Total ai nodes: ", total_ai_nodes)
+            #print("Total ai time: ", total_ai_time)
+            #print("Total ai nodes: ", total_ai_nodes)
             self.end_the_game = 1
         else:
             if(self.ai_type == "random"):
@@ -103,7 +103,7 @@ class Game:
             elif(self.ai_type == "ab_pruning"):
                 print ("ab pruning not done")
         end = time.time()
-        total_ai_time = total_ai_time + end - start
+        #total_ai_time = total_ai_time + end - start
 
 
     def player_playing(self):
@@ -113,8 +113,8 @@ class Game:
             print(moves)
             if(len(moves) == 0): # if no more moves left, end the game
                 print("Player lost the game")
-                print("Total ai time: ", total_ai_time)
-                print("Total ai nodes: ", total_ai_nodes)
+                #print("Total ai time: ", total_ai_time)
+                #print("Total ai nodes: ", total_ai_nodes)
                 self.end_the_game = 1
             else:
                 is_valid = False
@@ -133,8 +133,9 @@ class Game:
 
     def first_moves(self):
         try:
-            decision = (input("Start or Divert to ai: "))
+            decision = input("Start or Divert to ai: ")
             if(decision == "Start"):
+                print("Start")
                 remove = int(input("Choose 1, 4, 5, 8: "))
                 if(remove == 1 or remove == 4 or remove == 5 or remove == 8):
                     remove = remove - 1 # adjust to zero index
@@ -155,7 +156,8 @@ class Game:
                 self.board.removePiece(self, adjacent)
                 print(self.board.str_board())
                 # then would start with player playing
-            else:
+            elif(decision == "Divert"):
+                print("Divert")
                 starts = ((0, 0), (3, 3), (4, 4), (7, 7))
                 start_removal = random.choice(starts)
                 self.board.removePiece(self, start_removal)
@@ -173,9 +175,12 @@ class Game:
                 self.board.removePiece(self, (input_coord[0] - 1, input_coord[1] - 1)) # make zero index and remove
                 print(self.board.str_board())
                 # then would start with ai playing
+            else:
+                print("Invalid input")
+                self.first_moves()
 
         except:
-            "Please provide valid input"
+            print("Please provide valid input")
             self.first_moves()
 
     def get_successors(self):
@@ -187,7 +192,7 @@ class Game:
         return successors
 
 
-# calls = 0
+calls = 0
 # num_branches = 0
 # static_evaluation_count = 0
 # total_cutoffs = 0
@@ -234,11 +239,12 @@ def static_evaluation(self):
     
 def play_game(game_state):
     print(game_state.board.str_board())
-    remove = input("B remove a piece: ")
-    game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
-    print(game_state.board.str_board())
-    remove = input("W remove a piece: ")
-    game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
+    #remove = input("B remove a piece: ")
+    #game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
+    #print(game_state.board.str_board())
+    #remove = input("W remove a piece: ")
+    #game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
+    game_state.first_moves()
     while game_state.end_the_game != 1:
         if game_state.current_player == 0:
             game_state.ai_playing()
@@ -249,9 +255,9 @@ def play_game(game_state):
     
 if __name__ == '__main__':
 	start = time.time()
-	
-	play_game(Game(Board(), None, None))
-	print "GAME TOOK", time.time() - start, "SECONDS"
-	print "NUM STATIC EVALS:", total_static_eval
-	print "AVG BRANCHING FACTOR:", total_branches/(calls+0.0)
-	print "NUM CUTOFFS", total_cutoffs
+	game = Game(Board(), None, None)
+	play_game(game)
+	print "Time elapsed: ", time.time() - start, " seconds"
+	print "Static Evaluations: ", game.total_static_eval
+	#print "Average branching factor: ", game.total_branches/(calls+0.0)
+	print "Total cutoffs: ", game.total_cutoffs
