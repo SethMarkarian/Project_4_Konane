@@ -98,6 +98,7 @@ class Game:
                     print("Made move: ", ((computer_move[0][0]+1, computer_move[0][1]+1), (computer_move[1][0]+1, computer_move[1][1]+1)))
                     self.last_move_made = computer_move
                     self.current_player = 1 - self.current_player
+                    return
                     print("minimax not done")
             elif(self.ai_type == "ab_pruning"):
                 print ("ab pruning not done")
