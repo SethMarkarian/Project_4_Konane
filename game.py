@@ -243,7 +243,7 @@ def play_game(game_state):
         if game_state.current_player == 0:
             game_state.ai_playing()
         else:
-            game_state.ai_playing()
+            game_state.player_playing()
 
     
     
