@@ -40,7 +40,20 @@ class Game:
                             #Check for multiple jumps
                             next_start = possible_move[0]
                             next_end = possible_move[1]
-                            #HOW DO I SIMULATE A MOVE???????
+                            copy = copy.deepcopy(self.board) #Make copy so we don't ruin current state of board
+                            copy.updateBoard(next_start, next_end) #"Simulate" a move
+                            same_direction_move = dir(next_end) # Move in the same direction again
+                            new_state = Game(copy, current_player) #make a new game state and see if same move is legal
+                            while(new_state.is_legal_move(current_player, same_direction_move)):
+                                current_start = next_end #Reassigns the start
+                                next_end = same_direction_move[1] # Reassigns the end
+                                moves.append((next_start, next_end)) #adds move to possible moves
+                                copy = copy.deepcopy(copy) #Make new board
+                                copy.updateBoard(current_start, next_end) #Update move
+                                same_direction_move = dir(next_end) #Move piece
+                                new_state = Game(copy, current_player) #Create new state
+        return moves
+
         return moves
 
     def is_legal_move(self, player, move):
