@@ -13,26 +13,26 @@ class Game:
         self.ai_type = "random"
         self.total_ai_nodes = 0
         self.total_ai_time = 0
-        self.total_total_cutoffs = 0
+        self.total_cutoffs = 0
         self.total_branches = 0
         self.total_parents = 0
         self.total_static_eval = 0
     
     @staticmethod
     def NORTH(position):
-        return (position, (pos[0] - 2, pos[1]))
+        return (position, (position[0] - 2, position[1]))
     
     @staticmethod
     def SOUTH(position):
-        return (position, (pos[0] + 2, pos[1]))
+        return (position, (position[0] + 2, position[1]))
     
     @staticmethod
     def EAST(position):
-        return (position, (pos[0], pos[1] + 2))
+        return (position, (position[0], position[1] + 2))
     
     @staticmethod
     def WEST(position):
-        return (position, (pos[0], pos[1] - 2))
+        return (position, (position[0], position[1] - 2))
 
     def find_moves(self, current_player):
         moves = [] #array with all possible moves for current player
@@ -43,7 +43,7 @@ class Game:
                     directions = [self.NORTH, self.SOUTH, self.EAST, self.WEST] #ways player can move
                     for dir in directions: #check all direction possibilities
                         possible_move = dir(current_position)
-                        if self.is_legal_move(possible_move):
+                        if self.is_legal_move(current_player, possible_move):
                             moves.append(possible_move)
                             
                             #Check for multiple jumps
@@ -92,7 +92,7 @@ class Game:
             elif(ai_type == "minimax"):
                 depth_input = 4
                 computer_move = minimax(self, float("-inf"), float("inf"), depth_input)
-			    computer_move = computer_move[1]
+                computer_move = computer_move[1]
                 if computer_move is not None:
                     self.board.updateBoard(computer_move[0], computer_move[1])
                     print("Made move: ", ((computer_move[0][0]+1, computer_move[0][1]+1), (computer_move[1][0]+1, computer_move[1][1]+1)))
@@ -186,14 +186,14 @@ class Game:
         return successors
 
 
-calls = 0
-num_branches = 0
-static_evaluation_count = 0
-total_cutoffs = 0
+# calls = 0
+# num_branches = 0
+# static_evaluation_count = 0
+# total_cutoffs = 0
 def minimax(state, alpha, beta, depth):
-    global total_cutoffs, num_branches, static_evaluation_count, total_cutoffs
+    #global total_cutoffs, num_branches, static_evaluation_count, total_cutoffs
     if depth == 4: #why 4 specifically???
-        static_evaluation_count += 1
+        self.total_static_eval += 1
         return (state.static_evaluation(), None)
     elif state.current_player == 0:
         move = None
@@ -221,3 +221,36 @@ def minimax(state, alpha, beta, depth):
                 total_cutoffs += 1
                 return (beta, move)
         return (beta, move)
+    
+def static_evaluation(self):
+    player_moves = self.get_legal_moves(0)
+    ai_moves = self.get_legal_moves(1)
+    if ai_moves == 0:
+        return float("inf")
+    if player_moves == 0:
+        return float("-inf")
+    return len(player_moves) - len(ai_moves)
+    
+def play_game(game_state):
+    print(game_state.board.str_board())
+    remove = input("B remove a piece: ")
+    game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
+    print(game_state.board.str_board())
+    remove = input("W remove a piece: ")
+    game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
+    while game_state.end_the_game != 1:
+        if game_state.current_player == 0:
+            game_state.ai_playing()
+        else:
+            game_state.ai_playing()
+
+    
+    
+if __name__ == '__main__':
+	start = time.time()
+	
+	play_game(Game(Board(), None, None))
+	print "GAME TOOK", time.time() - start, "SECONDS"
+	print "NUM STATIC EVALS:", total_static_eval
+	print "AVG BRANCHING FACTOR:", total_branches/(calls+0.0)
+	print "NUM CUTOFFS", total_cutoffs
