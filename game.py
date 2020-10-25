@@ -1,5 +1,6 @@
 from board import Board
 import copy
+import random
 
 class Game:
     def __init__(self, board, player, last_move_made):
@@ -64,9 +65,21 @@ class Game:
             return False
         return True
 
+    def ai_playing(self):
+        moves = self.find_moves(self.current_player)
+        if(len(moves) == 0):
+            print("Player won the game")
+            self.end_the_game = 1
+        else:
+            move = random.choice(moves) # choose random move
+            move = ((move[0][0] - 1, move[0][1] - 1), (move[1][0] - 1, move[1][1] - 1)) # adjust to be zero index
+            self.board.updateBoard(move[0], move[1])
+            print(self.board.str_board) # print board
+            self.current_player = (1 + self.current_player) % 2 # swap player
+
     def player_playing(self):
         try:
-            moves = self.find_moves(self.current_player)
+            moves = self.find_moves(self.current_player) # find moves
             print("Possible Moves:")
             print(moves)
             if(len(moves) == 0): # if no more moves left, end the game
@@ -79,14 +92,13 @@ class Game:
                     move_coord = ((move_coord[0][0] - 1, move_coord[0][1] - 1), (move_coord[1][0] - 1, move_coord[1][1] - 1)) # adjust to be zero index
                     is_valid_input = move_coord in moves
                 self.board.updateBoard(move_coord[0], move_coord[1])
+                print(self.board.str_board) # print board
+                self.current_player = (1 + self.current_player) % 2 # swap player
         except KeyboardInterrupt:
             raise
         except:
             print("Please provide valid input") # if invalid input
             self.player_playing()
-
-    def ai_playing(self):
-        return 0 #placeholder for compilation
     
     def get_successors(self):
         successors = []
