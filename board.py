@@ -41,7 +41,7 @@ class Board:
     def removePiece(self, curr_pos):
         self.rowIndex[curr_pos[0]][curr_pos[1]] = "."
 
-    def strBoard(self):
+    def str_board(self):
         #Prints board
         output = "  "
         for i in self.columnIndex:

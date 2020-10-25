@@ -106,7 +106,54 @@ class Game:
         except:
             print("Please provide valid input") # if invalid input
             self.player_playing()
-    
+
+    def first_moves(self):
+        try:
+            decision = (input("Start or Divert to ai: "))
+            if(decision == "Start"):
+                remove = int(input("Choose 1, 4, 5, 8: "))
+                if(remove == 1 or remove == 4 or remove == 5 or remove == 8):
+                    remove = remove - 1 # adjust to zero index
+                    remove_coord = (remove, remove)
+                else:
+                    "Please provide valid input"
+                    self.first_moves()
+                self.board.removePiece(self, remove_coord)
+                print(self.board.str_board)
+                if(remove_coord[0] == 0):
+                    adjacent_coords = ((0, 1), (1, 0))
+                elif(remove_coord[0] == 7):
+                    adajcent_coords = ((7, 6), (6, 7))
+                else:
+                    adjacent_coords = ((remove, remove - 1), (remove - 1, remove), (remove, remove + 1), (remove + 1, remove))
+                # adjacent_coords = ((remove, remove - 1), (remove - 1, remove), (remove, remove + 1), (remove + 1, remove))
+                adjacent = random.choice(adjacent_coords)
+                self.board.removePiece(self, adjacent)
+                print(self.board.str_board)
+                # then would start with player playing
+            else:
+                starts = ((0, 0), (3, 3), (4, 4), (7, 7))
+                start_removal = random.choice(starts)
+                self.board.removePiece(self, start_removal)
+                print(self.board.str_board)
+                if(start_removal[0] == 0):
+                    adjacent_coords_output = ((1, 2), (2, 1))
+                elif(start_removal_output[0] == 7):
+                    adajcent_coords_output = ((8, 7), (7, 8))
+                else:
+                    adjacent_coords_output = ((remove + 1, remove), (remove, remove + 1), (remove + 1, remove + 2), (remove + 2, remove + 1))
+                print("Legal inputs", adjacent_coords_output)
+                input_coord = (-1, -1)
+                while not(input_coord in adjacent_coords_output):
+                    input_coord = (input("Please choose input coordinate: "))
+                self.board.removePiece(self, (input_coord[0] - 1, input_coord[1] - 1)) # make zero index and remove
+                print(self.board.str_board)
+                # then would start with ai playing
+
+        except:
+            "Please provide valid input"
+            self.first_moves()
+
     def get_successors(self):
         successors = []
         for move in self.find_moves(self.current_player):
