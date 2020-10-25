@@ -1,6 +1,7 @@
 from board import Board
 import copy
 import random
+import time
 
 class Game:
     def __init__(self, board, player, last_move_made):
@@ -10,6 +11,8 @@ class Game:
         self.player_piece = ('B', 'W')
         self.end_the_game = 0
         self.ai_type = "random"
+        self.total_ai_nodes = 0
+        self.total_ai_time = 0
     
     @staticmethod
     def NORTH(position):
@@ -67,9 +70,12 @@ class Game:
         return True
 
     def ai_playing(self):
+        start = time.time()
         moves = self.find_moves(self.current_player)
         if(len(moves) == 0):
             print("Player won the game")
+            print("Total ai time: ", total_ai_time)
+            print("Total ai nodes: ", total_ai_nodes)
             self.end_the_game = 1
         else:
             if(ai_type == "random"):
@@ -79,10 +85,13 @@ class Game:
                 print(self.board.str_board) # print board
                 self.current_player = (1 + self.current_player) % 2 # swap player
                 return
-            if(ai_type == "minimax"):
-                return
-            if(ai_type == "ab_pruning"):
-                return
+            elif(ai_type == "minimax"):
+                print("minimax not done")
+            elif(ai_type == "ab_pruning"):
+                print ("ab pruning not done")
+        end = time.time()
+        total_ai_time = total_ai_time + end - start
+
 
     def player_playing(self):
         try:
@@ -91,6 +100,8 @@ class Game:
             print(moves)
             if(len(moves) == 0): # if no more moves left, end the game
                 print("Player lost the game")
+                print("Total ai time: ", total_ai_time)
+                print("Total ai nodes: ", total_ai_nodes)
                 self.end_the_game = 1
             else:
                 is_valid = False
