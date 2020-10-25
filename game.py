@@ -1,3 +1,6 @@
+from board import Board
+import copy
+
 class Game:
     def __init__(self, board, player, last_move_made):
         self.board = board
@@ -55,3 +58,13 @@ class Game:
 
     def player_playing(self):
         return 0 #placeholder for compilation
+    
+    def get_successors(self):
+        successors = []
+        for move in self.find_moves(self.current_player):
+            copy = copy.deepcopy(self.board) #Copy so we don't edit the board
+            copy.updateBoard(move[0], move[1]) #Makes a predicted move
+            successors.append(Game(copy, 1 - self.current_player, move)) #adds move to successor moves
+        return successors
+
+
