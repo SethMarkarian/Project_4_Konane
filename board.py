@@ -13,14 +13,14 @@ class Board:
             for j in range(8):
                 if i % 2 == 0:
                     if j % 2 == 0:
-                        self.rowIndex[i].append("X")
+                        self.rowIndex[i].append("B")
                     else:
-                        self.rowIndex[i].append("O")
+                        self.rowIndex[i].append("W")
                 else:
                     if j % 2 == 0:
-                        self.rowIndex[i].append("O")
+                        self.rowIndex[i].append("W")
                     else:
-                        self.rowIndex[i].append("X")
+                        self.rowIndex[i].append("B")
                 
 
 

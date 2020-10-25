@@ -3,7 +3,7 @@ class Game:
         self.board = board
         self.current_player = 0
         self.last_move_made = ((),())
-        self.player_piece = ('X', 'O')
+        self.player_piece = ('B', 'W')
         self.end_game = 0
     
     @staticmethod
@@ -22,8 +22,8 @@ class Game:
     def WEST(position):
         return (position, (pos[0], pos[1] - 2))
 
-    def get_legal_moves(self, current_player)
-        legal_moves = [] #array with all possible moves for current player
+    def find_moves(self, current_player):
+        moves = [] #array with all possible moves for current player
         for i in range(8): #loop through rows
             for j in range(8): #loop through columns
                 if self.board.rowIndex[i][j] == self.player_piece[current_player]: #if the selected piece belongs to current player
@@ -32,13 +32,13 @@ class Game:
                     for dir in directions: #check all direction possibilities
                         possible_move = dir(current_position)
                         if self.is_legal_move(possible_move):
-                            legal_moves.append(possible_move)
+                            moves.append(possible_move)
                             
                             #Check for multiple jumps
                             next_start = possible_move[0]
                             next_end = possible_move[1]
                             #HOW DO I SIMULATE A MOVE???????
-
+        return moves
 
     def is_legal_move(self, player, move):
         start = move[0] #before moving
@@ -50,3 +50,8 @@ class Game:
             return False
         return True
 
+    def ai_playing(self):
+        moves = self.find_moves(self.current_player)
+
+    def player_playing(self):
+        return 0 #placeholder for compilation
