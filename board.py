@@ -29,10 +29,10 @@ class Board:
         self.rowIndex[prev_pos[0]][prev_pos[1]] = "."
 
         #Removes pieces from range of x and y
-        remove_x = sorted([from_pos[0], to_pos[0]+1])
-        remove_y = sorted([from_pos[1], to_pos[1]+1])
-        for i in range(remove_x):
-            for j in range(remove_y):
+        remove_x = sorted([prev_pos[0], curr_pos[0]+1])
+        remove_y = sorted([prev_pos[1], curr_pos[1]+1])
+        for i in range(*remove_x):
+            for j in range(*remove_y):
                 #Replaces piece with empty
                 self.rowIndex[i][j] = "."
         #Places moved piece in updated spot

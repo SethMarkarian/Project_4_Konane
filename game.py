@@ -49,26 +49,26 @@ class Game:
                             #Check for multiple jumps
                             next_start = possible_move[0]
                             next_end = possible_move[1]
-                            copy = copy.deepcopy(self.board) #Make copy so we don't ruin current state of board
-                            copy.updateBoard(next_start, next_end) #"Simulate" a move
+                            copy_board = copy.deepcopy(self.board) #Make copy so we don't ruin current state of board
+                            copy_board.updateBoard(next_start, next_end) #"Simulate" a move
                             same_direction_move = dir(next_end) # Move in the same direction again
-                            new_state = Game(copy, current_player) #make a new game state and see if same move is legal
+                            new_state = Game(copy_board, current_player, same_direction_move) #make a new game state and see if same move is legal
                             while(new_state.is_legal_move(current_player, same_direction_move)):
                                 current_start = next_end #Reassigns the start
                                 next_end = same_direction_move[1] # Reassigns the end
                                 moves.append((next_start, next_end)) #adds move to possible moves
-                                copy = copy.deepcopy(copy) #Make new board
-                                copy.updateBoard(current_start, next_end) #Update move
+                                copy_board = copy.deepcopy(copy_board) #Make new board
+                                copy_board.updateBoard(current_start, next_end) #Update move
                                 same_direction_move = dir(next_end) #Move piece
-                                new_state = Game(copy, current_player) #Create new state
+                                new_state = Game(copy_board, current_player, same_direction_move) #Create new state
         return moves
 
     def is_legal_move(self, player, move):
         start = move[0] #before moving
         end = move[1] #after moving
         
-        if end[0] > 8 or end[1] < 8: #Out of range
-            return False
+        if end[0] not in range(8) or end[1] not in range(8):	# Discard any generated moves that fall off of the board
+			return False 
         if self.board.rowIndex[end[0]][end[1]] != ".": # Checks if end spot is empty
             return False
         return True
@@ -82,14 +82,14 @@ class Game:
             print("Total ai nodes: ", total_ai_nodes)
             self.end_the_game = 1
         else:
-            if(ai_type == "random"):
+            if(self.ai_type == "random"):
                 move = random.choice(moves) # choose random move
                 move = ((move[0][0] - 1, move[0][1] - 1), (move[1][0] - 1, move[1][1] - 1)) # adjust to be zero index
                 self.board.updateBoard(move[0], move[1])
-                print(self.board.str_board) # print board
+                print(self.board.str_board()) # print board
                 self.current_player = (1 + self.current_player) % 2 # swap player
                 return
-            elif(ai_type == "minimax"):
+            elif(self.ai_type == "minimax"):
                 depth_input = 4
                 computer_move = minimax(self, float("-inf"), float("inf"), depth_input)
                 computer_move = computer_move[1]
@@ -99,7 +99,7 @@ class Game:
                     self.last_move_made = computer_move
                     self.current_player = 1 - self.current_player
                     print("minimax not done")
-            elif(ai_type == "ab_pruning"):
+            elif(self.ai_type == "ab_pruning"):
                 print ("ab pruning not done")
         end = time.time()
         total_ai_time = total_ai_time + end - start
@@ -122,7 +122,7 @@ class Game:
                     move_coord = ((move_coord[0][0] - 1, move_coord[0][1] - 1), (move_coord[1][0] - 1, move_coord[1][1] - 1)) # adjust to be zero index
                     is_valid_input = move_coord in moves
                 self.board.updateBoard(move_coord[0], move_coord[1])
-                print(self.board.str_board) # print board
+                print(self.board.str_board()) # print board
                 self.current_player = (1 + self.current_player) % 2 # swap player
         except KeyboardInterrupt:
             raise
@@ -142,7 +142,7 @@ class Game:
                     "Please provide valid input"
                     self.first_moves()
                 self.board.removePiece(self, remove_coord)
-                print(self.board.str_board)
+                print(self.board.str_board())
                 if(remove_coord[0] == 0):
                     adjacent_coords = ((0, 1), (1, 0))
                 elif(remove_coord[0] == 7):
@@ -152,13 +152,13 @@ class Game:
                 # adjacent_coords = ((remove, remove - 1), (remove - 1, remove), (remove, remove + 1), (remove + 1, remove))
                 adjacent = random.choice(adjacent_coords)
                 self.board.removePiece(self, adjacent)
-                print(self.board.str_board)
+                print(self.board.str_board())
                 # then would start with player playing
             else:
                 starts = ((0, 0), (3, 3), (4, 4), (7, 7))
                 start_removal = random.choice(starts)
                 self.board.removePiece(self, start_removal)
-                print(self.board.str_board)
+                print(self.board.str_board())
                 if(start_removal[0] == 0):
                     adjacent_coords_output = ((1, 2), (2, 1))
                 elif(start_removal_output[0] == 7):
@@ -170,7 +170,7 @@ class Game:
                 while not(input_coord in adjacent_coords_output):
                     input_coord = (input("Please choose input coordinate: "))
                 self.board.removePiece(self, (input_coord[0] - 1, input_coord[1] - 1)) # make zero index and remove
-                print(self.board.str_board)
+                print(self.board.str_board())
                 # then would start with ai playing
 
         except:
