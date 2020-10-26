@@ -10,7 +10,7 @@ class Game:
         self.last_move = ((),())
         self.player_piece = ('B', 'W')
         self.end_the_game = 0
-        self.ai_type = "random"
+        self.ai_type = "minimax"
         #self.total_ai_nodes = 0
         #self.total_ai_time = 0
         self.total_cutoffs = 0
@@ -42,8 +42,8 @@ class Game:
                 if self.board.rowIndex[i][j] == self.player_piece[current_player]: #if the selected piece belongs to current player
                     current_position = (i, j) #current position tuple
                     directions = [self.NORTH, self.SOUTH, self.EAST, self.WEST] #ways player can move
-                    for dir in directions: #check all direction possibilities
-                        possible_move = dir(current_position)
+                    for direct in directions: #check all direction possibilities
+                        possible_move = direct(current_position)
                         if self.is_legal_move(current_player, possible_move):
                             moves.append(possible_move)
                             
@@ -52,7 +52,7 @@ class Game:
                             next_end = possible_move[1]
                             copy_board = copy.deepcopy(self.board) #Make copy so we don't ruin current state of board
                             copy_board.updateBoard(next_start, next_end) #"Simulate" a move
-                            same_direction_move = dir(next_end) # Move in the same direction again
+                            same_direction_move = direct(next_end) # Move in the same direction again
                             new_state = Game(copy_board, current_player, same_direction_move) #make a new game state and see if same move is legal
                             while(new_state.is_legal_move(current_player, same_direction_move)):
                                 current_start = next_end #Reassigns the start
@@ -60,7 +60,7 @@ class Game:
                                 moves.append((next_start, next_end)) #adds move to possible moves
                                 copy_board = copy.deepcopy(copy_board) #Make new board
                                 copy_board.updateBoard(current_start, next_end) #Update move
-                                same_direction_move = dir(next_end) #Move piece
+                                same_direction_move = direct(next_end) #Move piece
                                 new_state = Game(copy_board, current_player, same_direction_move) #Create new state
         return moves
 
@@ -72,6 +72,10 @@ class Game:
 			return False 
         if self.board.rowIndex[end[0]][end[1]] != ".": # Checks if end spot is empty
             return False
+        middle = (start[0]-(start[0]-end[0])/2,start[1]-(start[1]-end[1])/2)	# Check the middle spot is the other piece - this should in theory not matter because the pieces alternate
+        other_player = 1 - player 
+        if self.board.rowIndex[middle[0]][middle[1]] != self.player_piece[other_player]:
+			return False 
         return True
 
     def ai_playing(self):
@@ -121,9 +125,9 @@ class Game:
                 is_valid = False
                 while is_valid == False: # get valid input from player
                     move_coord = (input("Coordinate of piece: "), input("Coordinate to move piece: "))
-                    move_coord = ((move_coord[0][0] - 1, move_coord[0][1] - 1), (move_coord[1][0] - 1, move_coord[1][1] - 1)) # adjust to be zero index
-                    is_valid_input = move_coord in moves
-                self.board.updateBoard(move_coord[0], move_coord[1])
+                    real_move_coord = ((move_coord[0][0] - 1, move_coord[0][1] - 1), (move_coord[1][0] - 1, move_coord[1][1] - 1)) # adjust to be zero index
+                    is_valid = real_move_coord in moves
+                self.board.updateBoard(real_move_coord[0], real_move_coord[1])
                 print(self.board.str_board()) # print board
                 self.current_player = (1 + self.current_player) % 2 # swap player
         except KeyboardInterrupt:
@@ -191,20 +195,32 @@ class Game:
     def get_successors(self):
         successors = []
         for move in self.find_moves(self.current_player):
-            copy = copy.deepcopy(self.board) #Copy so we don't edit the board
-            copy.updateBoard(move[0], move[1]) #Makes a predicted move
-            successors.append(Game(copy, 1 - self.current_player, move)) #adds move to successor moves
+            board_copy = copy.deepcopy(self.board) #Copy so we don't edit the board
+            board_copy.updateBoard(move[0], move[1]) #Makes a predicted move
+            successors.append(Game(board_copy, 1 - self.current_player, move)) #adds move to successor moves
+        for i in successors:
+            if False:
+                print(i.board.str_board())
         return successors
+
+    def static_evaluation(self):
+        player_moves = self.find_moves(0)
+        ai_moves = self.find_moves(1)
+        if ai_moves == 0:
+            return float("inf")
+        if player_moves == 0:
+            return float("-inf")
+        return len(player_moves) - len(ai_moves)
 
 
 calls = 0
-# num_branches = 0
-# static_evaluation_count = 0
-# total_cutoffs = 0
+num_branches = 0
+static_evaluation_count = 0
+total_cutoffs = 0
 def minimax(state, alpha, beta, depth):
-    #global total_cutoffs, num_branches, static_evaluation_count, total_cutoffs
-    if depth == 4: #why 4 specifically???
-        self.total_static_eval += 1
+    global total_cutoffs, num_branches, static_evaluation_count, total_cutoffs
+    if depth == 4:
+        static_evaluation_count += 1
         return (state.static_evaluation(), None)
     elif state.current_player == 0:
         move = None
@@ -233,14 +249,7 @@ def minimax(state, alpha, beta, depth):
                 return (beta, move)
         return (beta, move)
     
-def static_evaluation(self):
-    player_moves = self.get_legal_moves(0)
-    ai_moves = self.get_legal_moves(1)
-    if ai_moves == 0:
-        return float("inf")
-    if player_moves == 0:
-        return float("-inf")
-    return len(player_moves) - len(ai_moves)
+
     
 def play_game(game_state):
     print(game_state.board.str_board())
