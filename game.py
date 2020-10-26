@@ -6,7 +6,7 @@ import time
 class Game:
     def __init__(self, board, player = 0, last_move = ((), ())):
         self.board = board
-        self.current_player = PlayervAI
+        self.current_player = "PlayervAI"
         self.last_move = last_move
         self.player_piece = ('B', 'W')
         self.end_the_game = 0
@@ -272,6 +272,22 @@ def play_game(game_state):
         game_state.ai_type = ai_type
         print(game_state.ai_type)
         if(whos_playing == "AIvAI"):
+            starts = ((0, 0), (3, 3), (4, 4), (7, 7))
+            start_removal = random.choice(starts)
+            print(start_removal)
+            game_state.board.removePiece(start_removal)
+            print(game_state.board.str_board())
+            adjacents = ((0, 1), (1, 0)) # if 0
+            if(start_removal[0] == 7): # if 7
+                adjacents = ((6, 7), (7, 6))
+            elif(start_removal[0] == 4):
+                adjacents = ((4, 5), (4, 3), (3, 4), (5, 4))
+            elif(start_removal[0] == 5):
+                adjacents = ((5, 6), (5, 4), (4, 5), (6, 5))
+            adjacent_removal = random.choice(adjacents)
+            print(adjacent_removal)
+            game_state.board.removePiece(adjacent_removal)
+            print(game_state.board.str_board())
             while game_state.end_the_game != 1:
                 if game_state.current_player == 0:
                     game_state.ai_playing()
