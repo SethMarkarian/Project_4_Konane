@@ -81,7 +81,6 @@ class Game:
     def ai_playing(self):
         start = time.time()
         moves = self.find_moves(self.current_player)
-        print("Possible Moves: ", moves)
         if(len(moves) == 0):
             piece = "W"
             if(self.current_player == 0):
@@ -93,7 +92,7 @@ class Game:
         else:
             if(self.ai_type == "Random"):
                 move = random.choice(moves) # choose random move
-                move = ((move[0][0], move[0][1]), (move[1][0], move[1][1])) # adjust to be zero index
+                move = ((move[0][0] - 1, move[0][1] - 1), (move[1][0] - 1, move[1][1] - 1)) # adjust to be zero index
                 self.board.updateBoard(move[0], move[1])
                 print(self.board.str_board()) # print board
                 self.current_player = (1 + self.current_player) % 2 # swap player
@@ -256,7 +255,24 @@ def minimax(state, alpha, beta, depth):
                 return (beta, move)
         return (beta, move)
     
-
+def minimax(state):
+    global calls, num_branches, static_evaluation_count, total_cutoffs
+    if state.current_player == 0:
+        move = None
+        calls += 1
+        for successor_state in state.get_successors():
+            num_branches += 1
+            player_move = minimax(successor_state)
+            move = successor_state.last_move
+        return move
+    else:
+        move = None
+        calls += 1
+        for successor_state in state.get_successors():
+            num_branches += 1
+            player_move = minimax(successor_state)
+            move = successor_state.last_move
+        return move
     
 def play_game(game_state):
     try:
