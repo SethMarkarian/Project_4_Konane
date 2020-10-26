@@ -98,8 +98,7 @@ class Game:
                 self.current_player = (1 + self.current_player) % 2 # swap player
                 return
             elif(self.ai_type == "Minimax"):
-                depth_input = 4
-                computer_move = minimax(self, float("-inf"), float("inf"), depth_input)
+                computer_move = minimax(self, float("-inf"), float("inf"), 0)
                 computer_move = computer_move[1]
                 if computer_move is not None:
                     self.board.updateBoard(computer_move[0], computer_move[1])
