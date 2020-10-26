@@ -224,7 +224,7 @@ num_branches = 0
 static_evaluation_count = 0
 total_cutoffs = 0
 def minimax(state, alpha, beta, depth):
-    global total_cutoffs, num_branches, static_evaluation_count, total_cutoffs
+    global calls, num_branches, static_evaluation_count, total_cutoffs
     if depth == 4:
         static_evaluation_count += 1
         return (state.static_evaluation(), None)
@@ -247,7 +247,7 @@ def minimax(state, alpha, beta, depth):
         for successor_state in state.get_successors():
             num_branches += 1
             ab, player_move = minimax(successor_state, alpha, beta, depth + 1)
-            if be < beta:
+            if ab < beta:
                 beta = ab
                 move = successor_state.last_move
             if beta <= alpha:
