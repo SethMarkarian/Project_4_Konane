@@ -98,6 +98,8 @@ class Game:
                 self.current_player = (1 + self.current_player) % 2 # swap player
                 return
             elif(self.ai_type == "Minimax"):
+                    print("minimax not done")
+            elif(self.ai_type == "MinimaxAlphaBeta"):
                 computer_move = minimax(self, float("-inf"), float("inf"), 0)
                 computer_move = computer_move[1]
                 if computer_move is not None:
@@ -106,8 +108,6 @@ class Game:
                     self.last_move_made = computer_move
                     self.current_player = 1 - self.current_player
                     return
-                    print("minimax not done")
-            elif(self.ai_type == "MinimaxAlphaBeta"):
                 print ("ab pruning not done")
         end = time.time()
         self.total_ai_time = self.total_ai_time + end - start
