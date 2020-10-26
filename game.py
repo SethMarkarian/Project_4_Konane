@@ -116,9 +116,10 @@ class Game:
                 self.current_player = (1 + self.current_player) % 2 # swap player
                 return
             elif(self.ai_type == "Minimax"):
-                    print("minimax not done")
+                # need to get depth
+                print("minimax not working")
             elif(self.ai_type == "MinimaxAlphaBeta"):
-                computer_move = minimax(self, float("-inf"), float("inf"), 0)
+                computer_move = minimax_ab(self, float("-inf"), float("inf"), 0)
                 computer_move = computer_move[1]
                 if computer_move is not None:
                     self.board.updateBoard(computer_move[0], computer_move[1])
@@ -241,7 +242,7 @@ calls = 0
 num_branches = 0
 static_evaluation_count = 0
 total_cutoffs = 0
-def minimax(state, alpha, beta, depth):
+def minimax_ab(state, alpha, beta, depth):
     global calls, num_branches, static_evaluation_count, total_cutoffs
     if depth == 4:
         static_evaluation_count += 1
@@ -251,7 +252,7 @@ def minimax(state, alpha, beta, depth):
         calls += 1
         for successor_state in state.get_successors():
             num_branches += 1
-            ab, player_move = minimax(successor_state, alpha, beta, depth + 1)
+            ab, player_move = minimax_ab(successor_state, alpha, beta, depth + 1)
             if ab > alpha:
                 alpha = ab
                 move = successor_state.last_move
@@ -264,7 +265,7 @@ def minimax(state, alpha, beta, depth):
         calls += 1
         for successor_state in state.get_successors():
             num_branches += 1
-            ab, player_move = minimax(successor_state, alpha, beta, depth + 1)
+            ab, player_move = minimax_ab(successor_state, alpha, beta, depth + 1)
             if ab < beta:
                 beta = ab
                 move = successor_state.last_move
