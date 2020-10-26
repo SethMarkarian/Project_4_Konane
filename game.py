@@ -116,7 +116,16 @@ class Game:
                 self.current_player = (1 + self.current_player) % 2 # swap player
                 return
             elif(self.ai_type == "Minimax"):
+                computer_move = minimax(self, 0)
+                computer_move = computer_move
+                if computer_move is not None:
+                    self.board.updateBoard(computer_move[0], computer_move[1])
+                    print("Made move: ", ((computer_move[0][0]+1, computer_move[0][1]+1), (computer_move[1][0]+1, computer_move[1][1]+1)))
+                    self.last_move_made = computer_move
+                    self.current_player = 1 - self.current_player
+                    return
                 # need to get depth
+
                 print("minimax not working")
             elif(self.ai_type == "MinimaxAlphaBeta"):
                 computer_move = minimax_ab(self, float("-inf"), float("inf"), 0)
@@ -274,14 +283,17 @@ def minimax_ab(state, alpha, beta, depth):
                 return (beta, move)
         return (beta, move)
     
-def minimax(state):
+def minimax(state, depth):
     global calls, num_branches, static_evaluation_count, total_cutoffs
+    if depth == 4:
+        static_evaluation_count += 1
+        return (state.static_evaluation(), None)
     if state.current_player == 0:
         move = None
         calls += 1
         for successor_state in state.get_successors():
             num_branches += 1
-            player_move = minimax(successor_state)
+            player_move = minimax(successor_state, depth + 1)
             move = successor_state.last_move
         return move
     else:
@@ -289,7 +301,7 @@ def minimax(state):
         calls += 1
         for successor_state in state.get_successors():
             num_branches += 1
-            player_move = minimax(successor_state)
+            player_move = minimax(successor_state, depth + 1)
             move = successor_state.last_move
         return move
     
@@ -354,7 +366,7 @@ if __name__ == '__main__':
 	start = time.time()
 	game = Game(Board(), None, None)
 	play_game(game)
-	print "Time elapsed: ", time.time() - start, " seconds"
-	print "Static Evaluations: ", game.total_static_eval
-	#print "Average branching factor: ", game.total_branches/(calls+0.0)
-	print "Total cutoffs: ", game.total_cutoffs
+	print("Time elapsed: ", time.time() - start, " seconds")
+	print("Static Evaluations: ", static_evaluation_count)
+	print("Average branching factor: ", num_branches/(calls+0.0))
+	print("Total cutoffs: ", total_cutoffs)
