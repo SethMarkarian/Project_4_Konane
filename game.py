@@ -108,7 +108,7 @@ class Game:
                     self.last_move_made = computer_move
                     self.current_player = 1 - self.current_player
                     return
-                print ("ab pruning not done")
+                #print ("ab pruning not done")
         end = time.time()
         self.total_ai_time = self.total_ai_time + end - start
 
