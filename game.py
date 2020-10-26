@@ -138,9 +138,9 @@ class Game:
                 self.current_player = (1 + self.current_player) % 2 # swap player
         except KeyboardInterrupt:
             raise
-        except:
-            print("Please provide valid input") # if invalid input
-            self.player_playing()
+        except Exception, e:
+            print(e) # if invalid input
+            #self.player_playing()
 
     def first_moves(self):
         try:
@@ -196,7 +196,7 @@ class Game:
         except Exception,e:
             print(str(e))
             print("Please provide valid input")
-            self.first_moves()
+            #self.first_moves()
 
     def get_successors(self):
         successors = []
@@ -282,8 +282,8 @@ def play_game(game_state):
                 adjacents = ((6, 7), (7, 6))
             elif(start_removal[0] == 4):
                 adjacents = ((4, 5), (4, 3), (3, 4), (5, 4))
-            elif(start_removal[0] == 5):
-                adjacents = ((5, 6), (5, 4), (4, 5), (6, 5))
+            elif(start_removal[0] == 3):
+                adjacents = ((3, 2), (3, 4), (2, 3), (4, 3))
             adjacent_removal = random.choice(adjacents)
             print(adjacent_removal)
             game_state.board.removePiece(adjacent_removal)
@@ -312,7 +312,7 @@ def play_game(game_state):
                 print("Total AI time: ", game_state.total_ai_time)
     except Exception,e:
         print(e)
-        play_game(game_state)
+        #play_game(game_state)
     
 if __name__ == '__main__':
 	start = time.time()
