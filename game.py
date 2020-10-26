@@ -4,10 +4,10 @@ import random
 import time
 
 class Game:
-    def __init__(self, board, player, last_move_made):
+    def __init__(self, board, player = 0, last_move = ((), ())):
         self.board = board
-        self.current_player = 0
-        self.last_move = ((),())
+        self.current_player = PlayervAI
+        self.last_move = last_move
         self.player_piece = ('B', 'W')
         self.end_the_game = 0
         self.ai_type = "random"
@@ -236,7 +236,7 @@ def minimax(state, alpha, beta, depth):
             ab, player_move = minimax(successor_state, alpha, beta, depth + 1)
             if ab > alpha:
                 alpha = ab
-                move = successor_state.last_move_made
+                move = successor_state.last_move
             if alpha >= beta:
                 total_cutoffs += 1
                 return (beta, move)
@@ -249,7 +249,7 @@ def minimax(state, alpha, beta, depth):
             ab, player_move = minimax(successor_state, alpha, beta, depth + 1)
             if be < beta:
                 beta = ab
-                move = successor_state.last_move_made
+                move = successor_state.last_move
             if beta <= alpha:
                 total_cutoffs += 1
                 return (beta, move)
