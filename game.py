@@ -280,7 +280,7 @@ def minimax_ab(state, alpha, beta, depth):
                 move = successor_state.last_move
             if beta <= alpha:
                 total_cutoffs += 1
-                return (beta, move)
+                return (alpha, move)
         return (beta, move)
     
 def minimax(state, depth):
