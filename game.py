@@ -10,9 +10,9 @@ class Game:
         self.last_move = ((),())
         self.player_piece = ('B', 'W')
         self.end_the_game = 0
-        self.ai_type = "minimax"
+        self.ai_type = "random"
         #self.total_ai_nodes = 0
-        #self.total_ai_time = 0
+        self.total_ai_time = 0
         self.total_cutoffs = 0
         self.total_branches = 0
         #self.total_parents = 0
@@ -82,19 +82,22 @@ class Game:
         start = time.time()
         moves = self.find_moves(self.current_player)
         if(len(moves) == 0):
-            print("Player won the game")
+            piece = "W"
+            if(self.current_player == 0):
+                piece = "B"
+            print("Player " + piece + " won the game")
             #print("Total ai time: ", total_ai_time)
             #print("Total ai nodes: ", total_ai_nodes)
             self.end_the_game = 1
         else:
-            if(self.ai_type == "random"):
+            if(self.ai_type == "Random"):
                 move = random.choice(moves) # choose random move
                 move = ((move[0][0] - 1, move[0][1] - 1), (move[1][0] - 1, move[1][1] - 1)) # adjust to be zero index
                 self.board.updateBoard(move[0], move[1])
                 print(self.board.str_board()) # print board
                 self.current_player = (1 + self.current_player) % 2 # swap player
                 return
-            elif(self.ai_type == "minimax"):
+            elif(self.ai_type == "Minimax"):
                 depth_input = 4
                 computer_move = minimax(self, float("-inf"), float("inf"), depth_input)
                 computer_move = computer_move[1]
@@ -105,10 +108,10 @@ class Game:
                     self.current_player = 1 - self.current_player
                     return
                     print("minimax not done")
-            elif(self.ai_type == "ab_pruning"):
+            elif(self.ai_type == "MinimaxAlphaBeta"):
                 print ("ab pruning not done")
         end = time.time()
-        #total_ai_time = total_ai_time + end - start
+        self.total_ai_time = self.total_ai_time + end - start
 
 
     def player_playing(self):
@@ -116,6 +119,10 @@ class Game:
             moves = self.find_moves(self.current_player) # find moves
             print("Possible Moves:")
             print(moves)
+            piece = "W"
+            if(self.current_player == 0):
+                piece = "B"
+            print("Player " + piece + " won the game")
             if(len(moves) == 0): # if no more moves left, end the game
                 print("Player lost the game")
                 #print("Total ai time: ", total_ai_time)
@@ -252,26 +259,45 @@ def minimax(state, alpha, beta, depth):
 
     
 def play_game(game_state):
-    print(game_state.board.str_board())
+    try:
+        print(game_state.board.str_board())
     #remove = input("B remove a piece: ")
     #game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
     #print(game_state.board.str_board())
     #remove = input("W remove a piece: ")
     #game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
-    game_state.first_moves()
-    if (game_state.diverted == 1):
-        while game_state.end_the_game != 1:
-            if game_state.current_player == 0:
-                game_state.ai_playing()
+    # two ai or ai and player
+        whos_playing = raw_input("AIvAI or PlayervAI: ")
+        # random, minimax, or minimax with alpha beta pruning
+        ai_type = raw_input("Random, Minimax, or MinimaxAlphaBeta: ")
+        game_state.ai_type = ai_type
+        print(game_state.ai_type)
+        if(whos_playing == "AIvAI"):
+            while game_state.end_the_game != 1:
+                if game_state.current_player == 0:
+                    game_state.ai_playing()
+                else:
+                    game_state.ai_playing()
+            print("Total AI time: ", game_state.total_ai_time)
+        elif(whos_playing == "PlayervAI"):
+            game_state.first_moves()
+            if (game_state.diverted == 1):
+                while game_state.end_the_game != 1:
+                    if game_state.current_player == 0:
+                        game_state.ai_playing()
+                    else:
+                        game_state.player_playing()
+                print("Total AI time: ", game_state.total_ai_time)
             else:
-                game_state.player_playing()
-    else:
-        while game_state.end_the_game != 1:
-            if game_state.current_player == 0:
-                game_state.player_playing()
-            else:
-                game_state.ai_playing()
-    
+                while game_state.end_the_game != 1:
+                    if game_state.current_player == 0:
+                        game_state.player_playing()
+                    else:
+                        game_state.ai_playing()
+                print("Total AI time: ", game_state.total_ai_time)
+    except Exception,e:
+        print(e)
+        play_game(game_state)
     
 if __name__ == '__main__':
 	start = time.time()
