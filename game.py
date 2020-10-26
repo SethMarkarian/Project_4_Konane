@@ -78,13 +78,31 @@ class Game:
 			return False 
         return True
 
+    def ai_playing_ai(self):
+        start = time.time()
+        moves = self.find_moves(self.current_player)
+        print("Possible Moves for Random AI: ", moves)
+        if(len(moves) == 0):
+            piece = "B"
+            if(self.current_player == 0): # if ai B, then W
+                piece = "W"
+            print("Player " + piece + " won the game")
+            self.end_the_game = 1
+        else:
+            move = random.choice(moves) #choose random move
+            self.board.updateBoard(move[0], move[1])
+            print(self.board.str_board()) # print board
+            self.current_player = (1 + self.current_player) % 2 #swap player
+        end = time.time();
+        self.total_ai_time = self.total_ai_time + end - start
+
     def ai_playing(self):
         start = time.time()
         moves = self.find_moves(self.current_player)
         if(len(moves) == 0):
-            piece = "W"
-            if(self.current_player == 0):
-                piece = "B"
+            piece = "B"
+            if(self.current_player == 0): # if ai b, then w won
+                piece = "W"
             print("Player " + piece + " won the game")
             #print("Total ai time: ", total_ai_time)
             #print("Total ai nodes: ", total_ai_nodes)
@@ -118,9 +136,9 @@ class Game:
             moves = self.find_moves(self.current_player) # find moves
             print("Possible Moves:")
             print(moves)
-            piece = "W"
-            if(self.current_player == 0):
-                piece = "B"
+            piece = "B"
+            if(self.current_player == 0): # if player b, then w won
+                piece = "W"
             print("Player " + piece + " won the game")
             if(len(moves) == 0): # if no more moves left, end the game
                 print("Player lost the game")
@@ -309,7 +327,7 @@ def play_game(game_state):
                 if game_state.current_player == 0:
                     game_state.ai_playing()
                 else:
-                    game_state.ai_playing()
+                    game_state.ai_playing_ai()
             print("Total AI time: ", game_state.total_ai_time)
         elif(whos_playing == "PlayervAI"):
             game_state.first_moves()
