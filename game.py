@@ -6,11 +6,11 @@ import time
 class Game:
     def __init__(self, board, player = 0, last_move = ((), ())):
         self.board = board
-        self.current_player = "PlayervAI"
+        self.current_player = 0
         self.last_move = last_move
         self.player_piece = ('B', 'W')
         self.end_the_game = 0
-        self.ai_type = "random"
+        self.ai_type = "Random"
         #self.total_ai_nodes = 0
         self.total_ai_time = 0
         self.total_cutoffs = 0
