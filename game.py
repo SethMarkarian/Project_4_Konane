@@ -18,6 +18,7 @@ class Game:
         #self.total_parents = 0
         self.total_static_eval = 0
         self.diverted = 0
+        self.minimax_depth = 4
     
     @staticmethod
     def NORTH(position):
@@ -319,6 +320,8 @@ def play_game(game_state):
         ai_type = raw_input("Random, Minimax, or MinimaxAlphaBeta: ")
         game_state.ai_type = ai_type
         print(game_state.ai_type)
+        """depth = int(input("Depth (2, 4, 6): "))
+        game_state.minimax_depth = depth """
         if(whos_playing == "AIvAI"):
             starts = ((0, 0), (3, 3), (4, 4), (7, 7))
             start_removal = random.choice(starts)
