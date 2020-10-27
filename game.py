@@ -82,7 +82,7 @@ class Game:
     def ai_playing_ai(self):
         start = time.time()
         moves = self.find_moves(self.current_player)
-        print("Possible Moves for Random AI: ", moves)
+        #print("Possible Moves for Random AI: ", moves)
         if(len(moves) == 0):
             piece = "B"
             if(self.current_player == 0): # if ai B, then W
@@ -91,6 +91,8 @@ class Game:
             self.end_the_game = 1
         else:
             move = random.choice(moves) #choose random move
+            move_output = ((move[0] + 1), (move[1] + 1))
+            print("Random AI move: ", move_output)
             self.board.updateBoard(move[0], move[1])
             print(self.board.str_board()) # print board
             self.current_player = (1 + self.current_player) % 2 #swap player
@@ -110,8 +112,11 @@ class Game:
             self.end_the_game = 1
         else:
             if(self.ai_type == "Random"):
-                move = random.choice(moves) # choose random move
-                move = ((move[0][0] - 1, move[0][1] - 1), (move[1][0] - 1, move[1][1] - 1)) # adjust to be zero index
+                #print(moves)
+                move = random.choice(moves) # choose random move, which is 0 indexed
+                move_output = ((move[0] + 1), (move[1] + 1)) # to be 1 indexed
+                print("AI move: ", move_output)
+                #move = ((move[0][0] - 1, move[0][1] - 1), (move[1][0] - 1, move[1][1] - 1)) # adjust to be zero index
                 self.board.updateBoard(move[0], move[1])
                 print(self.board.str_board()) # print board
                 self.current_player = (1 + self.current_player) % 2 # swap player
@@ -124,6 +129,7 @@ class Game:
                     print("Made move: ", ((computer_move[0][0]+1, computer_move[0][1]+1), (computer_move[1][0]+1, computer_move[1][1]+1)))
                     self.last_move_made = computer_move
                     self.current_player = 1 - self.current_player
+                    print(self.board.str_board()) # print board
                     return
                 # need to get depth
 
@@ -136,6 +142,7 @@ class Game:
                     print("Made move: ", ((computer_move[0][0]+1, computer_move[0][1]+1), (computer_move[1][0]+1, computer_move[1][1]+1)))
                     self.last_move_made = computer_move
                     self.current_player = 1 - self.current_player
+                    print(self.board.str_board()) # print board
                     return
                 #print ("ab pruning not done")
         end = time.time()
@@ -145,7 +152,7 @@ class Game:
     def player_playing(self):
         try:
             moves = self.find_moves(self.current_player) # find moves
-            print("Possible Moves:")
+            print("Possible Moves, 0 indexed:")
             print(moves)
             piece = "B"
             if(self.current_player == 0): # if player b, then w won

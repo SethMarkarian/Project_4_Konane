@@ -36,7 +36,7 @@ class Board:
                 #Replaces piece with empty
                 self.rowIndex[i][j] = "."
         #Places moved piece in updated spot
-        self.rowIndex[prev_pos[0]][curr_pos[1]] = moved        
+        self.rowIndex[curr_pos[0]][curr_pos[1]] = moved        
 
     def removePiece(self, curr_pos):
         self.rowIndex[curr_pos[0]][curr_pos[1]] = "."
