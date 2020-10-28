@@ -82,6 +82,8 @@ class Game:
     def ai_playing_ai(self):
         start = time.time()
         moves = self.find_moves(self.current_player)
+        print("Possible Random AI moves:")
+        self.print_moves(moves)
         #print("Possible Moves for Random AI: ", moves)
         if(len(moves) == 0):
             piece = "B"
@@ -91,8 +93,8 @@ class Game:
             self.end_the_game = 1
         else:
             move = random.choice(moves) #choose random move
-            move_output = ((move[0] + 1), (move[1] + 1))
-            print("Random AI move: ", move_output)
+            #move_output = ((move[0] + 1), (move[1] + 1))
+            print"Random AI move: ", self.str_move(move)
             self.board.updateBoard(move[0], move[1])
             print(self.board.str_board()) # print board
             self.current_player = (1 + self.current_player) % 2 #swap player
@@ -114,9 +116,10 @@ class Game:
             if(self.ai_type == "Random"):
                 #print(moves)
                 move = random.choice(moves) # choose random move, which is 0 indexed
-                move_output = ((move[0] + 1), (move[1] + 1)) # to be 1 indexed
-                print("AI move: ", move_output)
+                #move_output = ((int(move[0]) + 1), (int(move[1]) + 1)) # to be 1 indexed
+                print"AI move: ", self.str_move(move)
                 #move = ((move[0][0] - 1, move[0][1] - 1), (move[1][0] - 1, move[1][1] - 1)) # adjust to be zero index
+                self.str_move(move)
                 self.board.updateBoard(move[0], move[1])
                 print(self.board.str_board()) # print board
                 self.current_player = (1 + self.current_player) % 2 # swap player
@@ -133,7 +136,6 @@ class Game:
                     return
                 # need to get depth
 
-                print("minimax not working")
             elif(self.ai_type == "MinimaxAlphaBeta"):
                 computer_move = minimax_ab(self, float("-inf"), float("inf"), 0)
                 computer_move = computer_move[1]
@@ -148,18 +150,26 @@ class Game:
         end = time.time()
         self.total_ai_time = self.total_ai_time + end - start
 
+    def print_moves(self, moves):
+        for m in moves:
+            print self.str_move(m)
+
+    def str_move(self, move):
+        move_new = ((move[0][0] + 1, move[0][1] + 1), (move[1][0] + 1, move[1][1] + 1))
+        return move_new
 
     def player_playing(self):
         try:
             moves = self.find_moves(self.current_player) # find moves
-            print("Possible Moves, 0 indexed:")
-            print(moves)
-            piece = "B"
-            if(self.current_player == 0): # if player b, then w won
-                piece = "W"
-            print("Player " + piece + " won the game")
+            #print("Possible Moves, 0 indexed:")
+            #print(moves)
+            print("Possible Player Moves:")
+            self.print_moves(moves)
             if(len(moves) == 0): # if no more moves left, end the game
-                print("Player lost the game")
+                piece = "B"
+                if(self.current_player == 0): # if player b, then w won
+                    piece = "W"
+                print("Player " + piece + " won the game")
                 #print("Total ai time: ", total_ai_time)
                 #print("Total ai nodes: ", total_ai_nodes)
                 self.end_the_game = 1
@@ -195,11 +205,12 @@ class Game:
                 if(remove_coord[0] == 0):
                     adjacent_coords = ((0, 1), (1, 0))
                 elif(remove_coord[0] == 7):
-                    adajcent_coords = ((7, 6), (6, 7))
+                    adjacent_coords = ((7, 6), (6, 7))
                 else:
                     adjacent_coords = ((remove, remove - 1), (remove - 1, remove), (remove, remove + 1), (remove + 1, remove))
                 # adjacent_coords = ((remove, remove - 1), (remove - 1, remove), (remove, remove + 1), (remove + 1, remove))
                 adjacent = random.choice(adjacent_coords)
+                print(adjacent)
                 self.board.removePiece(adjacent)
                 print(self.board.str_board())
                 # then would start with player playing
@@ -231,7 +242,8 @@ class Game:
 
         except Exception,e:
             print(str(e))
-            print("Please provide valid input")
+            print("Please start over.")
+            raise
             #self.first_moves()
 
     def get_successors(self):
@@ -261,7 +273,7 @@ static_evaluation_count = 0
 total_cutoffs = 0
 def minimax_ab(state, alpha, beta, depth):
     global calls, num_branches, static_evaluation_count, total_cutoffs
-    if depth == 4:
+    if depth == state.minimax_depth:
         static_evaluation_count += 1
         return (state.static_evaluation(), None)
     elif state.current_player == 0:
@@ -293,7 +305,7 @@ def minimax_ab(state, alpha, beta, depth):
     
 def minimax(state, depth):
     global calls, num_branches, static_evaluation_count, total_cutoffs
-    if depth == 4:
+    if depth == state.minimax_depth:
         static_evaluation_count += 1
         return (state.static_evaluation(), None)
     if state.current_player == 0:
@@ -322,13 +334,21 @@ def play_game(game_state):
     #remove = input("W remove a piece: ")
     #game_state.board.removePiece((remove[0] - 1, remove[1] - 1))
     # two ai or ai and player
-        whos_playing = raw_input("AIvAI or PlayervAI: ")
+        whos_playing = "No one"
+        while(whos_playing != "AIvAI" and whos_playing != "PlayervAI"):
         # random, minimax, or minimax with alpha beta pruning
-        ai_type = raw_input("Random, Minimax, or MinimaxAlphaBeta: ")
+            whos_playing = raw_input("AIvAI or PlayervAI: ")
+        print(whos_playing)
+        ai_type = "Fake"
+        while(ai_type != "Random" and ai_type != "Minimax" and ai_type != "MinimaxAlphaBeta"):
+            ai_type = raw_input("Random, Minimax, or MinimaxAlphaBeta: ")
         game_state.ai_type = ai_type
         print(game_state.ai_type)
-        """depth = int(input("Depth (2, 4, 6): "))
-        game_state.minimax_depth = depth """
+        depth = 0
+        if(ai_type == "Minimax" or ai_type == "MinimaxAlphaBeta"):
+            while(depth != 2 and depth != 4 and depth != 6):
+                depth = int(input("Depth (2, 4, 6): "))
+            game_state.minimax_depth = depth
         if(whos_playing == "AIvAI"):
             starts = ((0, 0), (3, 3), (4, 4), (7, 7))
             start_removal = random.choice(starts)
@@ -370,6 +390,7 @@ def play_game(game_state):
                 print("Total AI time: ", game_state.total_ai_time)
     except Exception,e:
         print(e)
+        raise
         #play_game(game_state)
     
 if __name__ == '__main__':
@@ -378,5 +399,6 @@ if __name__ == '__main__':
 	play_game(game)
 	print("Time elapsed: ", time.time() - start, " seconds")
 	print("Static Evaluations: ", static_evaluation_count)
-	print("Average branching factor: ", num_branches/(calls+0.0))
+    #print("Average branching factor: ", num_branches/(calls+0.0))
+	#print("Average branching factor: ", num_branches/(calls+0.0))
 	print("Total cutoffs: ", total_cutoffs)
